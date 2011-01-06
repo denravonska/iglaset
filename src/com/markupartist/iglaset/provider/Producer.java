@@ -1,10 +1,8 @@
 package com.markupartist.iglaset.provider;
 
-import com.markupartist.iglaset.provider.Drink.Volume;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
 
 /**
  * @author marco
