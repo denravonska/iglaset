@@ -45,14 +45,17 @@ public abstract class AbstractParser<T> extends DefaultHandler {
 		return getContent();
 	}
 	
+	@Override
     public void characters(char ch[], int start, int length) {
     	stringBuilder.append(ch, start, length);
     }	
     
+	@Override
     public void startElement(String uri, String name, String qName, Attributes atts) {
     	onStartElement(name, atts);
     }
     
+	@Override
     public void endElement(String uri, String name, String qName) {
     	String result = stringBuilder.toString().trim();
     	onEndElement(name, result);
