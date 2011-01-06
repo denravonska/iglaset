@@ -108,6 +108,8 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
      */
     protected static final int REQUEST_CODE_SETTINGS_CHANGED = 0;
 
+    private static final int PRODUCER_SECTION_ID = 20;
+    
     /**
      * The log tag
      */
@@ -155,11 +157,31 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
         mUserRatingAdapter = new UserRatingAdapter(this, 0);
         this.updateUserRatingInUi(drink.getUserRating());
         mSectionedAdapter.addSectionFirst(0, getText(R.string.my_rating), mUserRatingAdapter);
-
+        
         if (mAuthentication != null && mAuthentication.looksValid()) {
         	launchGetDrinkTask(drink);
         }
 
+        if(!TextUtils.isEmpty(drink.getProducer())) {
+        	Map<String, Object> data = new HashMap<String, Object>();
+        	data.put("text", drink.getProducer());
+        	
+            ArrayList<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            list.add(data);
+
+        	SimpleAdapter producerAdapter = new SimpleAdapter(
+        			this,
+        			list,
+        			R.layout.simple_row,
+                    new String[] { "text" },
+                    new int[] { 
+                        R.id.simple_row_text
+        			});
+        	
+        	mSectionedAdapter.addSection(PRODUCER_SECTION_ID, "Producent", producerAdapter);
+        }
+
+        
         if(true == drink.hasDescription()) {
         	DrinkDescriptionAdapter adapter = new DrinkDescriptionAdapter(this, drink.getDescription());
         	mSectionedAdapter.addSection(0, getText(R.string.manufacturers_description), adapter);
@@ -511,6 +533,10 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
         } else if (section.adapter instanceof DrinkDescriptionAdapter) {
         	DrinkDescriptionAdapter description = (DrinkDescriptionAdapter) section.adapter;
         	description.toggleVisibility();
+        } else if(section.getId() == PRODUCER_SECTION_ID) {
+        	Intent intent = new Intent(this, ProducerActivity.class);
+        	intent.putExtra(ProducerActivity.EXTRA_PRODUCER_ID, DrinkDetailActivity.sDrink.getProducerId());
+        	startActivity(intent);
         }
     }
 
