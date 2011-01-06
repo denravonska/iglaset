@@ -46,10 +46,20 @@ import android.widget.TextView;
 
 public class ProducerActivity extends MapActivity implements GetProducerTask.GetProducerListener, SearchDrinkCompletedListener {
 
+	/**
+	 * @author marco
+	 * Class used to retain data between configuration changes such as screen rotation.
+	 */
+	private static class ConfigurationInstance {
+		public Producer producer;
+		public GeoPoint producerLocation;
+	}
+	
 	private final static String TAG = ProducerActivity.class.getSimpleName();
 	public final static String EXTRA_PRODUCER_ID = "com.markupartist.iglaset.action.PRODUCER_ID";
 	public final static String EXTRA_PRODUCER = "com.markupartist.iglaset.action.PRODUCER_ID";
 	private Producer producer;
+	private GeoPoint producerLocation;
 	private GetProducerTask getProducerTask;
 	private GetAddressTask getAddressTask;
 	private SearchDrinksTask searchDrinksTask;
@@ -65,6 +75,16 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
 		// TODO Implement double-click-to-zoom
 		// http://stackoverflow.com/questions/3044259/google-maps-in-android
 		
+		ConfigurationInstance instance = (ConfigurationInstance) getLastNonConfigurationInstance();
+		if(instance != null) {
+			producer = instance.producer;
+			producerLocation = instance.producerLocation;
+			
+			if(producerLocation != null) {
+				this.onProducerLocation(producerLocation);
+			}
+		}
+		
         Bundle extras = getIntent().getExtras();
         if(extras.containsKey(EXTRA_PRODUCER)) {
         	producer = (Producer) extras.getParcelable(EXTRA_PRODUCER);
@@ -79,6 +99,15 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
 			Log.e(TAG, "No producer data available :(");
 		}
 	}
+    
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+    	ConfigurationInstance instance = new ConfigurationInstance();
+    	instance.producer = producer;
+    	instance.producerLocation = producerLocation;
+    	//instance.producer = mProducer;
+    	return instance;
+    }
     
     SectionedAdapter sectionedAdapter = new SectionedAdapter() {
         protected View getHeaderView(Section section, int index, 
@@ -204,8 +233,11 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
 	public void onGetProducerComplete(Producer producer) {
     	this.producer = producer;
     	
-    	if(null != producer) {
-    		launchGetAddressTask(producer);
+    	if(producer != null) {
+    		if(producerLocation == null) {
+    			launchGetAddressTask(producer);
+    		}
+    		
     		launchSearchDrinksTask(producer.getId());
     		
             ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
@@ -292,13 +324,9 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
 	    @Override
 	    protected void onPostExecute(GeoPoint point) {
 	    	if(null != point) {
-	    		mapView.getController().setCenter(point);
-	    		
-				Drawable marker = getResources().getDrawable(R.drawable.map_indicator);
-				MarkerOverlay overlay = new MarkerOverlay(marker);
-				overlay.addOverlay(new OverlayItem(point, producer.getName(), producer.getName()));
-	    		mapView.getOverlays().add(overlay);
+	    		onProducerLocation(point);
 	    	} else {
+	    		Log.e(TAG, "Error fetching producer location");
 	    	}
 	    }
 	}
@@ -432,5 +460,18 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
         DrinkAdapter adapter = new DrinkAdapter(this, result);
 		ListView list = (ListView) findViewById(R.id.producer_information_list);
         list.setAdapter(adapter);
+	}
+	
+	private void onProducerLocation(GeoPoint point) {
+		producerLocation = point;
+		
+		MapView mapView = (MapView) findViewById(R.id.producer_map);
+		
+		mapView.getController().setCenter(producerLocation);
+		
+		Drawable marker = getResources().getDrawable(R.drawable.map_indicator);
+		MarkerOverlay overlay = new MarkerOverlay(marker);
+		overlay.addOverlay(new OverlayItem(producerLocation, producer.getName(), producer.getName()));
+		mapView.getOverlays().add(overlay);
 	}
 }
