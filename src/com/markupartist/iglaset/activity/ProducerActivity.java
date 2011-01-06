@@ -15,10 +15,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.IntentAction;
-import com.markupartist.iglaset.IglasetApplication;
 import com.markupartist.iglaset.R;
 import com.markupartist.iglaset.activity.SearchDrinksTask.SearchDrinkCompletedListener;
-import com.markupartist.iglaset.activity.SearchResultActivity.DrinkAdapter;
 import com.markupartist.iglaset.provider.AuthStore;
 import com.markupartist.iglaset.provider.AuthStore.Authentication;
 import com.markupartist.iglaset.provider.AuthenticationException;
@@ -49,8 +47,8 @@ import android.widget.TextView;
 public class ProducerActivity extends MapActivity implements GetProducerTask.GetProducerListener, SearchDrinkCompletedListener {
 
 	private final static String TAG = ProducerActivity.class.getSimpleName();
-	public final static String EXTRA_PRODUCER_ID =
-		"com.markupartist.iglaset.action.PRODUCER_ID";
+	public final static String EXTRA_PRODUCER_ID = "com.markupartist.iglaset.action.PRODUCER_ID";
+	public final static String EXTRA_PRODUCER = "com.markupartist.iglaset.action.PRODUCER_ID";
 	private Producer producer;
 	private GetProducerTask getProducerTask;
 	private GetAddressTask getAddressTask;
@@ -68,11 +66,17 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
 		// http://stackoverflow.com/questions/3044259/google-maps-in-android
 		
         Bundle extras = getIntent().getExtras();
+        if(extras.containsKey(EXTRA_PRODUCER)) {
+        	producer = (Producer) extras.getParcelable(EXTRA_PRODUCER);
+        }
+        
         if(producer != null) {
         	onGetProducerComplete(producer);
         } else if(extras.containsKey(EXTRA_PRODUCER_ID)) {
 			final int producerId = extras.getInt(EXTRA_PRODUCER_ID);
 			launchGetProducerTask(producerId);
+		} else {
+			Log.e(TAG, "No producer data available :(");
 		}
 	}
     

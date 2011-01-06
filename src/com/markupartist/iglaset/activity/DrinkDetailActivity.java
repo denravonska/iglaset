@@ -61,6 +61,7 @@ import com.markupartist.iglaset.provider.CommentsStore;
 import com.markupartist.iglaset.provider.Drink;
 import com.markupartist.iglaset.provider.DrinksStore;
 import com.markupartist.iglaset.provider.Drink.Volume;
+import com.markupartist.iglaset.provider.Producer;
 import com.markupartist.iglaset.provider.Tag;
 import com.markupartist.iglaset.util.ListUtils;
 import com.markupartist.iglaset.util.MultiHashMap;
@@ -71,6 +72,16 @@ import com.markupartist.iglaset.widget.SectionedAdapter.Section;
 import com.markupartist.iglaset.widget.VolumeAdapter;
 
 public class DrinkDetailActivity extends ListActivity implements View.OnClickListener {
+	
+	/**
+	 * @author marco
+	 * Class used to retain data between configuration changes such as screen rotation.
+	 */
+	private static class ConfigurationInstance {
+		public ArrayList<Comment> comments;
+		public Producer producer;
+	}
+	
     /**
      * The id for the rating dialog
      */
@@ -123,6 +134,8 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
     private GetDrinkTask mGetDrinkTask;
     private GetCommentsTask mGetCommentsTask;
     private DrinkViewHolder mViewHolder;
+    private Producer mProducer;
+    private GetProducerTask mGetProducerTask;
 
     /** Called when the activity is first created. */
     @Override
@@ -209,17 +222,9 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
                 createLoadingAdapter(getText(R.string.loading_comments)));
         
         // Check if already have some data, used if screen is rotated.
-        @SuppressWarnings("unchecked")
-        final ArrayList<Comment> comments = (ArrayList<Comment>) getLastNonConfigurationInstance();
-        if (comments != null) {
-        	updateCommentsInUi(comments);
-        } else if(drink.getCommentCount() == 0) {
-        	// Update the comment list with an empty array
-        	updateCommentsInUi(new ArrayList<Comment>());
-        } else {
-            launchGetCommentsTask(drink);
-        }
-
+        final ConfigurationInstance instance = (ConfigurationInstance) getLastNonConfigurationInstance();
+        onLastNonConfigurationInstance(instance, drink);
+        
         setListAdapter(mSectionedAdapter);
         
         // Orphan barcode handler layout
@@ -238,6 +243,28 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
 		buttonCancel.setOnClickListener(this);
         
         this.registerReceiver(mBroadcastReceiver, new IntentFilter(Intents.ACTION_PUBLISH_DRINK));
+    }
+    
+    private void onLastNonConfigurationInstance(ConfigurationInstance instance, Drink drink) {
+    	
+    	if(instance != null) {
+    		mComments = instance.comments;
+    		mProducer = instance.producer;
+    	}
+    	
+    	// Check previous comments
+        if (mComments != null) {
+        	updateCommentsInUi(mComments);
+        } else if(drink.getCommentCount() == 0) {
+        	// Update the comment list with an empty array
+        	updateCommentsInUi(new ArrayList<Comment>());
+        } else {
+            launchGetCommentsTask(drink);
+        }
+        
+        if(mProducer == null && drink.getProducerId() != Producer.UNDEFINED_ID) {
+        	launchGetProducerTask(drink.getProducerId());
+        }
     }
     
     @Override
@@ -338,6 +365,7 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
     protected void onDestroy() {
     	cancelGetDrinkTask();
     	cancelGetCommentsTask();
+    	cancelGetProducerTask();
     	
     	unregisterReceiver(mBroadcastReceiver);
  
@@ -390,7 +418,10 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mComments;
+    	ConfigurationInstance instance = new ConfigurationInstance();
+    	instance.comments = mComments;
+    	instance.producer = mProducer;
+    	return instance;
     }
 
     private SimpleAdapter createLoadingAdapter(CharSequence loadingText) {
@@ -536,6 +567,9 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
         } else if(section.getId() == PRODUCER_SECTION_ID) {
         	Intent intent = new Intent(this, ProducerActivity.class);
         	intent.putExtra(ProducerActivity.EXTRA_PRODUCER_ID, DrinkDetailActivity.sDrink.getProducerId());
+        	if(mProducer != null) {
+        		intent.putExtra(ProducerActivity.EXTRA_PRODUCER, mProducer);
+        	}
         	startActivity(intent);
         }
     }
@@ -973,6 +1007,29 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
     	if(null != mGetDrinkTask && mGetDrinkTask.getStatus() == AsyncTask.Status.RUNNING) {
     		mGetDrinkTask.cancel(true);
     		mGetDrinkTask = null;
+    	}
+    }
+    
+    private void launchGetProducerTask(int producerId) {
+    	cancelGetProducerTask();
+    	mGetProducerTask = new GetProducerTask(new GetProducerTask.GetProducerListener() {
+			
+			@Override
+			public void onGetProducerError() {	
+			}
+			
+			@Override
+			public void onGetProducerComplete(Producer producer) {
+				mProducer = producer;
+			}
+		});
+    	mGetProducerTask.execute(producerId);
+    }
+    
+    private void cancelGetProducerTask() {
+    	if(mGetProducerTask != null && mGetProducerTask.getStatus() == AsyncTask.Status.RUNNING) {
+    		mGetProducerTask.cancel(true);
+    		mGetProducerTask = null;
     	}
     }
 
