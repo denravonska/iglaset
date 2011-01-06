@@ -16,7 +16,9 @@ public abstract class SearchCriteria {
     private String mQuery;
     private int mCategory;
     private int mPage = 1;
-    private String mBarcode;
+    private int mProducer = Producer.UNDEFINED_ID;
+
+	private String mBarcode;
     private ArrayList<Integer> mTags;
     private AuthStore.Authentication mAuthentication;
     
@@ -157,6 +159,14 @@ public abstract class SearchCriteria {
     public ArrayList<Integer> getTags() {
     	return mTags;
     }
+    
+    public int getProducer() {
+		return mProducer;
+	}
+
+	public void setProducer(int mProducer) {
+		this.mProducer = mProducer;
+	}
     
     @Override
     public String toString() {
