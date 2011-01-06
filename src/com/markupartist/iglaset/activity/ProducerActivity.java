@@ -330,40 +330,6 @@ public class ProducerActivity extends MapActivity implements GetProducerTask.Get
 	    	}
 	    }
 	}
-	
-    /**
-     * Background task for fetching a drink.
-     */
-    private class GetDrinksTask extends AsyncTask<Object, Void, ArrayList<Drink>> {
-
-    	private Exception caughtException;
-    	
-        @Override
-        protected ArrayList<Drink> doInBackground(Object... params) {
-            publishProgress();
-
-            Authentication authentication = (Authentication) params[0];
-            Integer producerId = (Integer) params[1];
-            try {
-				 return DrinksStore.getInstance().searchDrinks(
-						new ProducerSearchCriteria(producerId, authentication));
-			} catch (IOException e) {
-				e.printStackTrace();
-				Log.e(TAG, "Failed to retreive producer articles");
-			}
-			
-			return null;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Drink> drinks) {
-        	if(null != drinks) {
-        		onUpdatedDrinks(drinks);
-        	} else {
-               // showDialog(DIALOG_SEARCH_NETWORK_PROBLEM);
-        	}
-        }
-    }
 
     /**
      * List adapter for drinks. Deals with pagination internally.
