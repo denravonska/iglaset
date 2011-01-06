@@ -51,7 +51,10 @@ public class DrinksStore {
 
     public ArrayList<Drink> searchDrinks(SearchCriteria searchCriteria)
             throws IOException {
-        final HttpGet get = new HttpGet(buildSearchUri(searchCriteria));
+    	
+    	final String uri = buildSearchUri(searchCriteria);
+    	Log.d(TAG, uri);
+        final HttpGet get = new HttpGet(uri);
         HttpEntity entity = null;
 
         final HttpResponse response = HttpManager.execute(get);
@@ -202,6 +205,8 @@ public class DrinksStore {
         	builder.append("&str=").append(URLEncoder.encode(searchCriteria.getQuery()));
         if (searchCriteria.getCategory() > 0)
         	builder.append("&category=").append(searchCriteria.getCategory());
+        if (searchCriteria.getProducer() != Producer.UNDEFINED_ID)
+        	builder.append("&producer_id=").append(searchCriteria.getProducer());
         if (searchCriteria.getAuthentication() != null
                 && !TextUtils.isEmpty(searchCriteria.getAuthentication().v2.token))
         	builder.append("&user_credentials=").append(searchCriteria.getAuthentication().v2.token);
