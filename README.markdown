@@ -29,8 +29,12 @@ Schedule
 
 Changelog
 ---------
-* Next
+* Next:
+* 1.4.2
+    * Added ActionBar
+    * Removed the Recommendation sort mode as it filtered the results.
     * Added sorting to Ratings and Recommendations.
+    * Fixed crash when sorting.
     * Minor UI tweaks.
 * 1.4.1
     * Fixed crash on 1.6 devices (thanks to Daniel Ekström for the report)
