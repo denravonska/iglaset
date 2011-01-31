@@ -8,7 +8,7 @@ import org.xml.sax.SAXException;
 public class TagsParser extends AbstractParser<Tag> {
 	
 	private ArrayList<Tag> tags = new ArrayList<Tag>();
-	private Tag currentTag;
+	private Tag currentTag = null;
 
     @Override
     public void startDocument() throws SAXException {
@@ -30,16 +30,18 @@ public class TagsParser extends AbstractParser<Tag> {
 
 	@Override
 	public void onEndElement(String name, String result) {
-    	if(name.equals("tag")) {
-    		if(currentTag.getId() != Tag.UNDEFINED_ID) {
-    			tags.add(currentTag);
-    		}
-    		currentTag = null;
-    	} else if(name.equals("tag_type")) {
-    		currentTag.setType(result);
-    	} else if(name.equals("name")) {
-    		currentTag.setName(result);
-    	}
+		if(currentTag != null) {
+	    	if(name.equals("tag")) {
+	    		if(currentTag.getId() != Tag.UNDEFINED_ID) {
+	    			tags.add(currentTag);
+	    		}
+	    		currentTag = null;
+	    	} else if(name.equals("tag_type")) {
+	    		currentTag.setType(result);
+	    	} else if(name.equals("name")) {
+	    		currentTag.setName(result);
+	    	}
+		}
 	}
 
 	@Override
