@@ -6,6 +6,7 @@ import com.markupartist.iglaset.R;
 import com.markupartist.iglaset.provider.Drink;
 
 import android.content.Context;
+import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -72,8 +73,8 @@ public class DrinkViewHolder {
     		getNameView().setCompoundDrawables(null, null, null, null);
     	}
     }
-
-    private ImageLoader.Callback imageLoaderCallback = new ImageLoader.Callback() {
+    
+    private static ImageLoader.Callback imageLoaderCallback = new ImageLoader.Callback() {
 		
 		@Override
 		public void onImageLoaded(ImageView view, String url) {}
