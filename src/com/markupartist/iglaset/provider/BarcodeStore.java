@@ -21,19 +21,8 @@ public class BarcodeStore {
     private static final String TAG = BarcodeStore.class.getSimpleName();
     private static final String BARCODE_SUGGEST_URI = "http://www.iglaset.se/barcodes/suggest_ean.xml?user_credentials=%s";
     private static final String BARCODE_SEARCH_URI = "http://www.iglaset.se/barcodes/show_by_ean/%s.xml?page=%d";
-    private static BarcodeStore sInstance;
 
-    private BarcodeStore() {
-    }
-
-    public static BarcodeStore getInstance() {
-        if (sInstance == null) {
-            sInstance = new BarcodeStore();
-        }
-        return sInstance;
-    }
-
-    public boolean suggest(String barcode, Drink drink, AuthStore.Authentication authentication)
+    public static boolean suggest(String barcode, Drink drink, AuthStore.Authentication authentication)
             throws IOException {
         Log.d(TAG, "Suggesting barcode " + barcode);
 
@@ -55,7 +44,7 @@ public class BarcodeStore {
         return false;
     }
 
-    public ArrayList<Drink> search(SearchCriteria searchCriteria)
+    public static ArrayList<Drink> search(SearchCriteria searchCriteria)
             throws IOException {
 
         String searchUri = String.format(BARCODE_SEARCH_URI, searchCriteria.getBarcode(), searchCriteria.getPage());

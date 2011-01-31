@@ -907,7 +907,7 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
             	String barcode = (String) params[0];
             	Drink drink = (Drink) params[1];
             	AuthStore.Authentication authentication = (Authentication) params[2];
-                return BarcodeStore.getInstance().suggest(barcode, drink, authentication);
+                return BarcodeStore.suggest(barcode, drink, authentication);
             } catch (IOException e) {
                 return false;
             }

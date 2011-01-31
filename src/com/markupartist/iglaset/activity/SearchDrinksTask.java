@@ -29,8 +29,7 @@ public class SearchDrinksTask extends AsyncTask<SearchCriteria, Void, ArrayList<
         SearchCriteria searchCriteria = params[0];
         try {
             if (searchCriteria.hasBarcode()) {
-                BarcodeStore barcodeStore = BarcodeStore.getInstance();
-                return barcodeStore.search(searchCriteria);
+                return BarcodeStore.search(searchCriteria);
             } else if (searchCriteria instanceof RecommendationSearchCriteria) {
                 DrinksStore drinksStore = DrinksStore.getInstance();
                 return drinksStore.findRecommendations(
