@@ -15,7 +15,7 @@ import android.text.format.DateFormat;
 class CommentsParser extends AbstractParser<Comment> {
     private ArrayList<Comment> mComments = new ArrayList<Comment>();
     private Comment mCurrentComment;
-    private static SimpleDateFormat CreatedTime = new SimpleDateFormat("yyyyMMddHHmmss");
+    private static final SimpleDateFormat createdTime = new SimpleDateFormat("yyyyMMddHHmmss");
 
     @Override
     public void startDocument() throws SAXException {
@@ -32,7 +32,7 @@ class CommentsParser extends AbstractParser<Comment> {
             mCurrentComment.setNickname(atts.getValue("nickname").trim());
 
             try {
-                Date created = CommentsParser.CreatedTime.parse(atts.getValue("created").trim());
+                Date created = CommentsParser.createdTime.parse(atts.getValue("created").trim());
                 mCurrentComment.setCreated(DateFormat.format("yyyy-MM-dd", created));
             } catch (ParseException e) {
                 mCurrentComment.setCreated(null);
