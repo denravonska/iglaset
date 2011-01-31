@@ -10,7 +10,7 @@ public class TextSearchCriteria extends SearchCriteria {
 
 	@Override
 	public int[] getSortModes() {
-		return SortModes;
+		return SortModes.clone();
 	}
 
 	@Override

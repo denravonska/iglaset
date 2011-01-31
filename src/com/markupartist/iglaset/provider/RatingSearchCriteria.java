@@ -19,7 +19,7 @@ public class RatingSearchCriteria extends SearchCriteria {
 
 	@Override
 	public int[] getSortModes() {
-		return SortModes;
+		return SortModes.clone();
 	}
 
 	@Override
