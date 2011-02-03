@@ -30,8 +30,6 @@ Schedule
 Changelog
 ---------
 * Next:
-    * Fixed resizely errors on thumbnails.
-    * Fixed incorrect network error when clicking on some of the article images.
 * 1.4.2
     * Added ActionBar
     * Removed the Recommendation sort mode as it filtered the results.
