@@ -61,8 +61,7 @@ public class DrinkImageViewerDialog extends Dialog implements ImageLoader.Callba
 	 */
 	public void load() {
 		if(null != drink) {
-			String imageURL = drink.getLargestImageUrl().replace(" ", "%20");
-			BindResult result = ImageLoader.get(getContext()).bind(imageView, imageURL, this);
+			BindResult result = ImageLoader.get(getContext()).bind(imageView, drink.getLargestImageUrl(), this);
 			if(result == ImageLoader.BindResult.LOADING) {
 				progressBar.setVisibility(ProgressBar.VISIBLE);
 				imageView.setVisibility(ImageView.GONE);

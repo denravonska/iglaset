@@ -48,8 +48,7 @@ public class DrinkViewHolder {
         final int h = getImageView().getDrawable().getIntrinsicHeight();
         
         ImageLoader.get(context).unbind(getImageView());
-        String imageURL = drink.getThumbnailUrl(w, h).replace(" ", "%20");
-        BindResult result = ImageLoader.get(context).bind(getImageView(), imageURL, imageLoaderCallback);
+        BindResult result = ImageLoader.get(context).bind(getImageView(), drink.getThumbnailUrl(w, h), imageLoaderCallback);
         if(result == ImageLoader.BindResult.LOADING || result == ImageLoader.BindResult.ERROR) {
 			getImageView().setImageResource(R.drawable.noimage);
         }
