@@ -8,6 +8,7 @@ import com.markupartist.iglaset.provider.Drink;
 import android.content.Context;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -47,7 +48,8 @@ public class DrinkViewHolder {
         final int h = getImageView().getDrawable().getIntrinsicHeight();
         
         ImageLoader.get(context).unbind(getImageView());
-        BindResult result = ImageLoader.get(context).bind(getImageView(), drink.getThumbnailUrl(w, h), imageLoaderCallback);
+        String imageURL = drink.getThumbnailUrl(w, h).replace(" ", "%20");
+        BindResult result = ImageLoader.get(context).bind(getImageView(), imageURL, imageLoaderCallback);
         if(result == ImageLoader.BindResult.LOADING || result == ImageLoader.BindResult.ERROR) {
 			getImageView().setImageResource(R.drawable.noimage);
         }
