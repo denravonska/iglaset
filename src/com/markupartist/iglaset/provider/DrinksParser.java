@@ -95,11 +95,11 @@ class DrinksParser extends AbstractParser<Drink> {
             } else if (name.equals("comments")) {
             	mCurrentDrink.setCommentCount(Integer.parseInt(cleanedResult));
             } else if (name.equals("small") && !TextUtils.isEmpty(cleanedResult)) {
-                mCurrentDrink.setImageUrl(Drink.ImageSize.SMALL, cleanedResult.replace(" ", "%20"));
+                mCurrentDrink.setImageUrl(Drink.ImageSize.SMALL, cleanedResult);
             } else if (name.equals("medium") && !TextUtils.isEmpty(cleanedResult)) {
-                mCurrentDrink.setImageUrl(Drink.ImageSize.MEDIUM, cleanedResult.replace(" ", "%20"));
+                mCurrentDrink.setImageUrl(Drink.ImageSize.MEDIUM, cleanedResult);
             } else if (name.equals("large") && !TextUtils.isEmpty(cleanedResult)) {
-                mCurrentDrink.setImageUrl(Drink.ImageSize.LARGE, cleanedResult.replace(" ", "%20"));
+                mCurrentDrink.setImageUrl(Drink.ImageSize.LARGE, cleanedResult);
             } else if (name.equals("user_rating") && cleanedResult.length() > 0) {
             	mCurrentDrink.setUserRating(Float.parseFloat(cleanedResult));
             } else if (name.equals("comments")) {
