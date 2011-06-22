@@ -417,12 +417,6 @@ public class SearchResultActivity extends ListActivity implements
         case R.id.menu_sort:
         	showDialog(DIALOG_SELECT_SORTING);
         	return true;
-        case R.id.menu_search:
-            onSearchRequested();
-            return true;
-        case R.id.menu_home:
-            startActivity(new Intent(this, StartActivity.class));
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

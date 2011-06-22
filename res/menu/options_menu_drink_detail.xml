@@ -15,12 +15,4 @@
         android:id="@+id/menu_goto_iglaset"
         android:title="@string/goto_iglaset"
         android:icon="@drawable/ic_menu_goto"/>
-    <item
-        android:id="@+id/menu_search"
-        android:title="@string/search_label"
-        android:icon="@android:drawable/ic_menu_search"/>
-    <item
-        android:id="@+id/menu_home"
-        android:title="@string/home_label"
-        android:icon="@drawable/ic_menu_home"/>
 </menu>

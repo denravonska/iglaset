@@ -524,9 +524,6 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.options_menu_drink_detail, menu);
-        
-        //TODO is this ("Search") really needed?
-        menu.removeItem(4);
         return true;
     }
 
@@ -542,9 +539,6 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
                         Uri.parse("http://www.iglaset.se/dryck/" + name + "/" + sDrink.getId()));
                 startActivity(browserIntent);
                 return true;
-            case R.id.menu_search:
-                onSearchRequested();
-                return true;
             case R.id.menu_rate:
             	tryShowAuthenticatedDialog(DIALOG_RATE);
                 return true;
@@ -554,9 +548,6 @@ public class DrinkDetailActivity extends ListActivity implements View.OnClickLis
             case R.id.menu_add_comment:
             	tryShowAuthenticatedDialog(DIALOG_ADD_COMMENT);
             	return true;
-            case R.id.menu_home:
-                startActivity(new Intent(this, StartActivity.class));
-                return true;
         }
         return super.onOptionsItemSelected(item);
     }
